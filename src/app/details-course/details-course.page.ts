@@ -11,35 +11,31 @@ import { AlertController, ToastController } from '@ionic/angular';
   standalone: false,
 })
 export class DetailsCoursePage {
-  selectedCourse: Course;
-  activatedRoute = inject(ActivatedRoute);
-  courseSer = inject(GestionCourse);
-  alertCtrl = inject(AlertController);
-  toastCtrl = inject(ToastController);
-  router = inject(Router);
-
-  ngOnInit() {
-    this.selectedCourse = this.courseSer.getCourseById(
-      this.activatedRoute.snapshot.paramMap.get('id')
-    );
-
-    console.log(this.selectedCourse);
-  }
-
-  async afficherAlerte() {
+    selectedCourse : Course;
+    private router = inject(Router);
+    private actRoute = inject(ActivatedRoute);
+    private CourseSer = inject(GestionCourse);
+    private alertCtrl = inject(AlertController);
+    private toastCtrl = inject(ToastController);
+    
+    ngOnInit() {
+      this.selectedCourse = this.CourseSer.getCourseById( this.actRoute.snapshot.paramMap.get('id'));  
+    }
+    
+    async presentAlert() {
     const alert = await this.alertCtrl.create({
       header: 'Confirmation',
       message: 'Etes-vous sûr de vouloir supprimer ce cours ?',
-      buttons: [
-        'Non',
+      buttons: ['Non', 
         {
-          text: 'Oui',
-          handler: () => {
-            this.courseSer.deleteCourse(this.selectedCourse.id);
-            this.presentToast();
-            this.router.navigateByUrl("/")
-          },
-        },
+            text : "Oui",
+            handler : () => {
+                this.CourseSer.deleteCourse(this.selectedCourse.id);
+                this.presentToast();
+                this.router.navigateByUrl("/home")
+                
+            }
+        }
       ],
     });
 
@@ -48,9 +44,9 @@ export class DetailsCoursePage {
   
     async presentToast() {
     const toast = await this.toastCtrl.create({
-      message: 'Course supprimé avec succès',
+      message: 'Cours supprimé avec succès',
       duration: 1500,
-      position: 'bottom',
+      position: "bottom",
       color : "danger",
       
     });
